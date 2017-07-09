@@ -46,5 +46,11 @@
 
 - (nonnull YHTableViewCell*) dequeueReusableCellWithIdentifier:(nonnull NSString*) identifier ;
 - (void) enqueueReusableCellWithIdentifier:(nonnull YHCellNode*) node forKey:(nonnull NSString*) identifier;
+
+- (void) removeElementFromVisibleCells:(nonnull YHTableViewCell*) cell;
+- (void) addElementToVisibleCells:(nonnull YHTableViewCell*) cell;
+- (nonnull YHTableViewCell*) getInitFirstCell;
+- (nonnull YHTableViewCell*) getInitLastCell;
+- (nonnull YHTableViewCell*) findCellByIndex:(NSUInteger) index;
 @end
 

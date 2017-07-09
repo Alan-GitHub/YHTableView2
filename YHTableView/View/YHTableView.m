@@ -59,7 +59,7 @@
         
         [self enqueueReusableCellWithIdentifier:self.firstCellInTableView.cellNodePointer forKey:ID];
         
-        [self.visibleCells removeObject:self.firstCellInTableView];
+        [self removeElementFromVisibleCells:self.firstCellInTableView];
         
         self.firstCellInTableView = [self findCellByIndex:self.topCell];
     }
@@ -88,7 +88,7 @@
 //        [self setNeedsLayout];
         [self layoutIfNeeded];
         
-        [self.visibleCells addObject:cell];
+        [self addElementToVisibleCells:cell];
     }
     
     
@@ -99,7 +99,7 @@
         
         [self enqueueReusableCellWithIdentifier:self.lastCellInTableView.cellNodePointer forKey:ID];
         
-        [self.visibleCells removeObject:self.lastCellInTableView];
+        [self removeElementFromVisibleCells:self.lastCellInTableView];
         
         self.lastCellInTableView = [self findCellByIndex:self.buttomCell];
     }
@@ -127,25 +127,8 @@
 //        [self setNeedsLayout];
         [self layoutIfNeeded];
         
-        [self.visibleCells addObject:cell];
+        [self addElementToVisibleCells:cell];
     }
-}
-
-- (YHTableViewCell*) findCellByIndex:(NSUInteger) index
-{
-    NSUInteger i = 0;
-    
-    for (; i < self.visibleCells.count; i++) {
-
-        if (index == self.visibleCells[i].cellIndex) {
-
-            return self.visibleCells[i];
-        
-        }
-    }
-    
-    //should not get here!
-    return nil;
 }
 
 - (void)layoutSubviews
@@ -227,15 +210,14 @@
         cell.frame = CGRectMake(0, cell.cellUpEdge, ScreenWidth, cell.cellHeight);
         [self addSubview:cell];
         
-        [self.visibleCells addObject:cell];
+        [self addElementToVisibleCells:cell];
     
         self.contentHeight += cell.cellHeight;
     }
     
     self.buttomCell = i - 1;
-    self.firstCellInTableView = self.visibleCells.firstObject;
-    self.lastCellInTableView = self.visibleCells.lastObject;
-    
+    self.firstCellInTableView = [self getInitFirstCell];
+    self.lastCellInTableView =  [self getInitLastCell];
 }
 
 #pragma mark Maintenance queue. Enqueue and Dequeue
@@ -256,6 +238,43 @@
     node.pointer = [self.reusedCells valueForKey:identifier];
     
     [self.reusedCells setValue:node forKey:identifier];
+}
+
+- (void) removeElementFromVisibleCells:(YHTableViewCell*) cell
+{
+    [self.visibleCells removeObject:cell];
+}
+
+- (void) addElementToVisibleCells:(YHTableViewCell*) cell
+{
+    [self.visibleCells addObject:cell];
+}
+
+- (YHTableViewCell*) getInitFirstCell
+{
+    return self.visibleCells.firstObject;
+}
+
+- (YHTableViewCell*) getInitLastCell
+{
+    return self.visibleCells.lastObject;
+}
+
+- (YHTableViewCell*) findCellByIndex:(NSUInteger) index
+{
+    NSUInteger i = 0;
+    
+    for (; i < self.visibleCells.count; i++) {
+        
+        if (index == self.visibleCells[i].cellIndex) {
+            
+            return self.visibleCells[i];
+            
+        }
+    }
+    
+    //should not get here!
+    return nil;
 }
 
 @end
